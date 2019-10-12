@@ -633,3 +633,29 @@ body, html{
 		padding-left: 0;
 	}
 }
+/*=================REGISTRAR SERVICIO==================*/
+.ajax-action-links {
+	color: #09F;
+	margin: 10px 0px;
+	cursor:pointer;
+}
+.ajax-action-button {
+	border:#094 1px solid;
+	color: #09F;
+
+	margin: 10px 0px;
+	cursor:pointer;
+	display: inline-block;
+	padding: 10px 20px;
+}
+.rs-asusap{
+	border:#094 1px solid;
+	color: #09F;
+	margin: 10px 0px;
+	cursor:pointer;
+	display: inline-block;
+	padding: 10px 20px;
+}
+.tabla-cabezera{
+	background: rgba(25,25,25,0.8);
+}

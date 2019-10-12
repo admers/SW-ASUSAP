@@ -1,3 +1,5 @@
+<script src="<?php echo SERVERURL;?>views/js/codeasusap.js"></script>
+
 <script>
 	$(document).ready(function(){
 		$('.btn-exit-system').on('click', function(e){

@@ -69,13 +69,51 @@
     </div>
 </div>
 
-<div class="container-fluid">
+
+
+    <div class="container" onload="listar_gconsumo('');">
+        <div class="row form-horizontal">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_consultar" data-toggle="tab">Tab A</a></li>
+            </ul>
+        </div>
+        </br>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_consultar">
+
+
+                <div class="row form-horizontal">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-xs-4  text-right">
+                                    <label for="buscar" class="control-label">Buscar:</label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <input  type="text" name="buscar" id="buscar" class="form-control" onkeyup="listar_gconsumo(this.value);" placeholder="Ingrese Cod. Suministro o Nombre"/>
+                                </div>
+                            </div>
+                            <div class="form-group" id="datos-resultGC">
+                                    <div class="card-body" id="container">
+                                    </div>
+                                    <div id="lista"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div><!-- tab content -->
+    </div>
 
 
 
-
-
-    <div class="col-xs-12 col-sm-12">
+    <!--<div class="col-xs-12 col-sm-12">
 
 
         <diV class="row justify-content-center page-header">
@@ -110,6 +148,7 @@
         <div class="col-xs-12"
         <div class="tab-pane fade" id="list">
             <div class="table-responsive">
+
                 <table class="table table-hover text-center">
                     <thead>
                     <tr>
@@ -124,7 +163,9 @@
                         <th class="text-center">G. Consumo</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="table">
+
+
                     <tr>
                         <td>1</td>
                         <td>Carlos Alfaro</td>
@@ -164,6 +205,7 @@
                     </tr>
                     </tbody>
                 </table>
+
                 <ul class="pagination pagination-sm">
                     <li class="disabled"><a href="#!">«</a></li>
                     <li class="active"><a href="#!">1</a></li>
@@ -173,8 +215,10 @@
                     <li><a href="#!">5</a></li>
                     <li><a href="#!">»</a></li>
                 </ul>
+
+
             </div>
         </div>
-    </div>
-</div>
+    </div>-->
+
 </div>

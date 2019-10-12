@@ -6,14 +6,56 @@
 	}
 	class adminController extends adminModel{
 
+    /*================================AGREGAR ASOCIADO============================================*/
 
         public function guardarUsuarioController(){
-            if (isset($_POST["nameUser"])){
+            if (isset($_POST["registrarAsoc"])){
 
-                $query3=mainModel::execute_single_query("SELECT telefono FROM asociado");
-                $correlative=($query3->rowCount())+1;
-                $code=mainModel::generate_code("AC",7,$correlative);
+				$dniTemp = $_POST['dniAsoc'];
+				$consultDni = "SELECT dni FROM asociado WHERE dni = $dniTemp";
+                $query1=mainModel::execute_single_query($consultDni);
+				
+				if($query1->rowCount() == 0){
+					$codigo_sum=mainModel::generate_codigo_sum($dniTemp,0);
+					$datosController = array(
+						"categoria" => $_POST['categoriaAsoc'],
+						"direccion" => $_POST['direccionAsoc'],						
+						"pasaje" => $_POST['direccionPsjAsoc'],						
+						"casa_nro" => $_POST['direccionNroAsoc'],						
+						"nombre" => $_POST['nombreAsoc'],
+						"apellido" => $_POST['apellidoAsoc'],
+						"dni" => $_POST['dniAsoc'],
+						"telefono" => $_POST['telefonoAsoc'],
+						"tiene_medidor" => $_POST['medidorAsoc'],
+						"codigo_sum" => $codigo_sum 
+					);
+					$rsptaModel = adminModel::guardarUsuario($datosController);
+					if($rsptaModel){
+						//echo "Registro exitoso";
+						echo '<script>
+								swal({
+									title: "¡OK!",
+									text: "¡Usuario ha sido creado correctamente!",
+									type: "success",
+									confirmButtonText: "Cerrar",
+									closeOnConfirm: false
+								},
+								function(isConfirm){
+										if (isConfirm) {	   
+											window.location = "newaasociat";
+										} 
+								});
+							</script>';
+					}else{
+						echo "No se pudo registrar";
+					}
+					//return true;
+				}else{
+					echo "DNI ya registardo";
+					return false;
+				}
 
+				/*
                     $datosController = array(
                         "idsociado" => $code,
                         "dni" => $_POST["dniUser"],
@@ -37,355 +79,145 @@
                                 window.location = "newaasociat";
                               } 
                     });
-                    </script>';
+					</script>';
+				*/
 
 
             }
 
+		}
+
+	/*================================GENERADOR DE SUMINISTRO============================================*/
+		public function pruebaController($msj){
+			return $msj;
+		}
+
+		public function consultaAsociado($query){
+			$result = mainModel::execute_single_query($query);
+			return $result;
+		}
+
+		public function insertarSuministroController(){
+
+			$dni = $_POST['dni'];
+
+			//Obtiene cant suministro del asociado. Luego suma más 1 para generar el códgio del sumin
+			$query = "SELECT cant_suministro FROM asociado WHERE dni = $dni";
+			$cant_sumi_asoc = mainModel::execute_single_query($query);
+			$cant_sumi_asoc = $cant_sumi_asoc->fetch();
+			$cant_sumi = $cant_sumi_asoc['cant_suministro'] + 1;
+
+			//genera códgio para el suministro de acuerdo a la cantidad e sum del asociado
+			$codigo_sum = mainModel::generate_codigo_sum($dni, $cant_sumi);
+
+			$arrdataSumi = array(
+				"asociado_dni" => $dni,
+				"cod_suministro" => $codigo_sum,
+				"direccion" => $_POST['direccionSumi'],
+				"pasaje" => $_POST['direccionPsjSumi'],
+				"casa_nro" => $_POST['direccionNroSumi'],
+				"corte" => $_POST['corteSumi'],
+				"medidor" => $_POST['medidorSumi'],
+				"categoria" => $_POST['categoriaSumi'],
+				"contador_deuda" => 0,
+	
+				"cant_suministro" => $cant_sumi
+	
+			);
+			
+			$rspModel = adminModel::insertarSuministroModel($arrdataSumi);
+
+			return "insertando suministro de codigo :{$codigo_sum} con numSum: {$cant_sumi}";
+		}
+
+	/*================================GENERADOR DE CONSUMO============================================*/
+
+        public function listaGconsumo($valor){
+
+            if (!empty($valor)) {
+                $conexion = mainModel::connect();
+              // $query = "SELECT * FROM factura_recibo WHERE suministro_cod_suministro like '%" . $valor . "%'";
+                $query= "SELECT a.idfactura_recibo,f.nombre,s.cod_suministro,s.direccion,a.consumo,a.monto_pagar,a.anio,a.mes,a.fecha_emision,a.hora_emision,a.fecha_vencimiento,a.consumo,a.monto_pagar, s.cod_suministro
+                            FROM ((factura_recibo a INNER JOIN suministro s ON a.suministro_cod_suministro = s.cod_suministro)
+                            INNER JOIN asociado f ON f.dni = s.asociado_dni) WHERE a.suministro_cod_suministro  like '%" . $valor . "%' OR f.nombre  like '%" . $valor . "%' OR s.direccion  like '%" . $valor . "%'";
+                $result = mainModel::execute_single_query($query);
+
+                $registroModal = [];
+                while($dataModal = $result->fetch()){
+                    $registroModal[] = [
+                        "idfact"=>$dataModal['idfactura_recibo'],
+                        "nombre"=>$dataModal['nombre'],
+                        "codSu"=>$dataModal['cod_suministro'],
+                        "dire"=>$dataModal['direccion'],
+                        "consumo"=>$dataModal['consumo'],
+                        "monto"=>$dataModal['monto_pagar'],
+                        "anio"=>$dataModal['anio'],
+                        "mes"=>$dataModal['mes'],
+                        "fechE"=>$dataModal['fecha_emision'],
+                        "horaE"=>$dataModal['hora_emision']
+                    ];
+
+                }
+
+
+
+                return $registroModal;
+
+            }
+
+
+
+
+
         }
 
-		/*----------  Función para guardar admin - Function to save admin  ----------*/
-		/*public function add_admin_controller(){
+        public function updGConsumo($valor,$id){
+                $res=0;
+            if (!empty($id)){
+                $dataAd = [
+                    "id" => $id,
+                    "consumo" => $valor,
+                ];
+                $res = adminModel::actualizarGC($dataAd);
+            }
+            return $res;
+        }
 
-			$name=mainModel::clean_string($_POST['name-reg']);
-			$lastname=mainModel::clean_string($_POST['lastname-reg']);
-			$phone=mainModel::clean_string($_POST['phone-reg']);
-			$address=mainModel::clean_string($_POST['address-reg']);
+    /*================================REGISTRAR SERVICIO  ============================================*/
 
-			$username=mainModel::clean_string($_POST['username-reg']);
-			$password1=mainModel::clean_string($_POST['password1-reg']);
-			$password2=mainModel::clean_string($_POST['password2-reg']);
-			$gender=mainModel::clean_string($_POST['gender-reg']);
-			$email=mainModel::clean_string($_POST['email-reg']);
+        public function listaRservicio($valorS){
 
-			$privelege=mainModel::decryption($_POST['privelege-reg']);
-			$privelege=mainModel::clean_string($privelege);
+            if (!empty($valorS)) {
 
-			if($privelege<1 || $privelege>3){
-				$dataAlert=[
-					"Title"=>"Ocurrió un error inesperado",
-					"Text"=>"El nivel de privilegio que intenta asignar no es correcto",
-					"Type"=>"error",
-					"Alert"=>"single"
-				];
-			}else{
-				if($password1!=$password2){
-					$dataAlert=[
-						"Title"=>"Ocurrió un error inesperado",
-						"Text"=>"Las contraseñas que acabas de ingresar no coinciden, por favor verifique e intente nuevamente",
-						"Type"=>"error",
-						"Alert"=>"single"
-					];
-				}else{
+                $conexion = mainModel::connect();
+                $query1 ="SELECT a.idfactura_servicio,f.nombre,f.apellido,s.cod_suministro,s.direccion,a.anio,a.mes,a.a_nombre,a.monto_pagado,a.total_pago,a.esta_cancelado
+                            FROM ((factura_servicio a INNER JOIN suministro s ON a.suministro_cod_suministro = s.cod_suministro)
+                            INNER JOIN asociado f ON f.dni = s.asociado_dni) WHERE a.suministro_cod_suministro  like '%" . $valorS . "%' OR f.nombre  like '%" . $valorS . "%' OR s.direccion  like '%" . $valorS . "%'";
 
-					if($email!=""){
-						$query1=mainModel::execute_single_query("SELECT * FROM account WHERE AccountEmail='$email'");
-						$ne=$query1->rowCount();
-					}else{
-						$ne=0;
-					}
+                $results = mainModel::execute_single_query($query1);
 
-					if($ne>=1){
-						$dataAlert=[
-							"Title"=>"Ocurrió un error inesperado",
-							"Text"=>"El Email que acaba de ingresar ya se encuentra registrado, por favor verifique e intente nuevamente",
-							"Type"=>"error",
-							"Alert"=>"single"
-						];
-					}else{
-						$query2=mainModel::execute_single_query("SELECT AccountUserName FROM account WHERE AccountUserName='$username'");
-						if($query2->rowCount()>=1){
-							$dataAlert=[
-								"Title"=>"Ocurrió un error inesperado",
-								"Text"=>"El nombre de usuario que acaba de ingresar ya se encuentra registrado, por favor verifique e intente nuevamente",
-								"Type"=>"error",
-								"Alert"=>"single"
-							];
-						}else{
+                $registroModal = [];
+                while($dataModal = $results->fetch()){
+                    $registroModal[] = [
+                        "idfacts"=>$dataModal['idfactura_servicio'],
+                        "nombreAS"=>$dataModal['nombre'],
+                        "apellidoAS"=>$dataModal['apellido'],
+                        "codSum"=>$dataModal['cod_suministro'],
+                        "direSR"=>$dataModal['direccion'],
+                        "anio"=>$dataModal['anio'],
+                        "mes"=>$dataModal['mes'],
+                        "anombre"=>$dataModal['a_nombre'],
+                        "cancel"=>$dataModal['esta_cancelado']
+                    ];
 
-							$query3=mainModel::execute_single_query("SELECT AdminCode FROM admin");
-							$correlative=($query3->rowCount())+1;
-							$code=mainModel::generate_code("AC",7,$correlative);
+                }
 
-							if($gender=="Masculino"){
-								$photo="AdminMaleAvatar.png";
-							}else{
-								$photo="AdminFemaleAvatar.png";
-							}
+                return $registroModal;
 
-							$password=mainModel::encryption($password1);
-
-							$dataAc=[
-								"AccountCode"=>$code,
-								"AccountPrivilege"=>$privelege,
-								"AccountUserName"=>$username,
-								"AccountEmail"=>$email,
-								"AccountPass"=>$password,
-								"AccountStatus"=>"Activo",
-								"AccountType"=>"Administrador",
-								"AccountGender"=>$gender,
-								"AccountPhoto"=>$photo
-							];
-
-							$AddAccount=mainModel::save_account($dataAc);
-							if($AddAccount->rowCount()>=1){
-
-								$dataAd=[
-									"AdminName"=>$name,
-									"AdminLastName"=>$lastname,
-									"AdminAddress"=>$address,
-									"AdminPhone"=>$phone,
-									"AccountCode"=>$code
-								];
-
-								$AddAdmin=adminModel::add_admin_model($dataAd);
-								if($AddAdmin->rowCount()>=1){
-									$dataAlert=[
-										"Title"=>"Administrador registrado",
-										"Text"=>"Los datos del administrador se registraron con éxito",
-										"Type"=>"success",
-										"Alert"=>"clear"
-									];
-								}else{
-									mainModel::delete_account($code);
-									$dataAlert=[
-										"Title"=>"Ocurrió un error inesperado",
-										"Text"=>"No hemos podido registrar el administrador, por favor intente nuevamente",
-										"Type"=>"error",
-										"Alert"=>"single"
-									];
-								}
-							}else{
-								$dataAlert=[
-									"Title"=>"Ocurrió un error inesperado",
-									"Text"=>"No hemos podido registrar el administrador, por favor intente nuevamente",
-									"Type"=>"error",
-									"Alert"=>"single"
-								];
-							}
-						}
-					}
-				}	
-			}
-			return mainModel::sweet_alert($dataAlert);
-		}*/
+            }
 
 
-		/*----------  Función para paginar los administradores - Function for paging administrators  ----------*/
-//		public function pagination_admin_controller($page,$result,$level,$codeA,$search){
-//
-//			$page=mainModel::clean_string($page);
-//			$result=mainModel::clean_string($result);
-//			$level=mainModel::clean_string($level);
-//			$codeA=mainModel::clean_string($codeA);
-//			$search=mainModel::clean_string($search);
-//			$table="";
-//
-//
-//			$page = (isset($page) && $page>0) ? (int) $page : 1;
-//
-//			$startR = ($page>0) ? (($page * $result)-$result) : 0;
-//
-//
-//			if(isset($search) && $search!=""){
-//				$consult="SELECT SQL_CALC_FOUND_ROWS * FROM admin WHERE ((AccountCode!='$codeA' AND 	AdminCode!='1') AND (AdminName LIKE '%$search%' OR AdminLastName LIKE '%$search%' OR AdminPhone LIKE '%$search%')) ORDER BY AdminName ASC LIMIT $startR,$result";
-//				$pageurl="adminsearch";
-//			}else{
-//				$consult="SELECT SQL_CALC_FOUND_ROWS * FROM admin WHERE AccountCode!='$codeA' AND AdminCode!='1' ORDER BY AdminName ASC LIMIT $startR,$result";
-//				$pageurl="adminlist";
-//			}
-//
-//
-//			$conection = mainModel::connect();
-//
-//			$data = $conection->query($consult);
-//			$data = $data->fetchAll();
-//
-//			$total = $conection->query("SELECT FOUND_ROWS()");
-//			$total = (int) $total->fetchColumn();
-//
-//			$numPages=ceil($total/$result);
-//
-//			$table.='
-//				<div class="table-responsive">
-//					<table class="table table-hover text-center">
-//						<thead>
-//							<tr>
-//								<th class="text-center">#</th>
-//								<th class="text-center">Nombres</th>
-//								<th class="text-center">Apellidos</th>
-//								<th class="text-center">Télefono</th>';
-//								if($level<=2){
-//									$table.='
-//										<th class="text-center">A. Cuenta</th>
-//										<th class="text-center">A. Datos</th>
-//									';
-//								}
-//								if($level==1){
-//									$table.='
-//										<th class="text-center">Eliminar</th>
-//									';
-//								}
-//			$table.='
-//							</tr>
-//						</thead>
-//						<tbody>
-//			';
-//
-//			if($total>=1 && $page<=$numPages){
-//				$nt=$startR+1;
-//				foreach($data as $rows){
-//					$table.='
-//						<tr>
-//							<td>'.$nt.'</td>
-//							<td>'.$rows['AdminName'].'</td>
-//							<td>'.$rows['AdminLastName'].'</td>
-//							<td>'.$rows['AdminPhone'].'</td>
-//					';
-//					if($level<=2){
-//						$table.='
-//							<td>
-//								<a href="'.SERVERURL.'myaccount/admin/'.mainModel::encryption($rows['AccountCode']).'/" class="btn btn-success btn-raised btn-xs">
-//									<i class="zmdi zmdi-refresh"></i>
-//								</a>
-//							</td>
-//							<td>
-//								<a href="'.SERVERURL.'mydata/admin/'.mainModel::encryption($rows['AccountCode']).'/" class="btn btn-success btn-raised btn-xs">
-//									<i class="zmdi zmdi-refresh"></i>
-//								</a>
-//							</td>
-//						';
-//					}
-//					if($level==1){
-//						$table.='
-//							<td>
-//								<form action="'.SERVERURL.'ajax/adminAjax.php" method="POST" class="DataAjaxForm" data-form="delete" enctype="multipart/form-data" autocomplete="off">
-//									<input type="hidden" name="code-del" value="'.mainModel::encryption($rows['AccountCode']).'">
-//									<input type="hidden" name="admin-level" value="'.mainModel::encryption($level).'">
-//									<button type="submit" class="btn btn-danger btn-raised btn-xs">
-//										<i class="zmdi zmdi-delete"></i>
-//									</button>
-//									<span class="AjaxReply"></span>
-//								</form>
-//							</td>
-//						';
-//					}
-//					$table.='
-//						</tr>
-//					';
-//					$nt++;
-//				}
-//			}else{
-//				if($total>=1){
-//					$table.='
-//						<tr>
-//							<td colspan="7">
-//								<a href="'.SERVERURL.$pageurl.'/" class="btn btn-sm btn-info btn-raised">
-//									Haga clic acá para recargar el listado
-//								</a>
-//							</td>
-//						</tr>
-//					';
-//				}else{
-//					$table.='
-//						<tr>
-//							<td colspan="7">
-//								No hay registros en el sistema
-//							</td>
-//						</tr>
-//					';
-//				}
-//			}
-//
-//			$table.='</tbody></table></div>
-//			';
-//
-//			if($total>=1 && $page<=$numPages){
-//				$table.='<nav class="text-center"><ul class="pagination pagination-sm">';
-//
-//				if($page==1){
-//					$table.='<li class="disabled"><a><i class="zmdi zmdi-arrow-left"></i></a></li>';
-//				}else{
-//					$table.='<li><a href="'.SERVERURL.$pageurl.'/'.($page-1).'/"><i class="zmdi zmdi-arrow-left"></i></a></li>';
-//				}
-//
-//				for($i=1; $i <= $numPages; $i++){
-//					if($page == $i){
-//						$table.='<li class="active"><a href="'.SERVERURL.$pageurl.'/'.$i.'/">'.$i.'</a></li>';
-//					}else{
-//						$table.='<li><a href="'.SERVERURL.$pageurl.'/'.$i.'/">'.$i.'</a></li>';
-//					}
-//				}
-//
-//				if($page==$numPages){
-//					$table.='<li class="disabled"><a><i class="zmdi zmdi-arrow-right"></i></a></li>';
-//				}else{
-//					$table.='<li><a href="'.SERVERURL.$pageurl.'/'.($page+1).'/"><i class="zmdi zmdi-arrow-right"></i></a></li>';
-//				}
-//
-//				$table.='</nav></div>';
-//			}
-//			return $table;
-//		}
-//
-//
-//		/*----------  Función para eliminar administrador - Function to delete administrator  ----------*/
-//		public function delete_admin_controller(){
-//			$code=mainModel::decryption($_POST['code-del']);
-//			$adminLevel=mainModel::decryption($_POST['admin-level']);
-//
-//			$code=mainModel::clean_string($code);
-//			$adminLevel=mainModel::clean_string($adminLevel);
-//
-//			if($adminLevel==1){
-//				$query1=mainModel::execute_single_query("SELECT * FROM admin WHERE AccountCode='$code'");
-//				$adminData=$query1->fetch();
-//				if($adminData['AdminCode']!=1){
-//					$DelAdmin=adminModel::delete_admin_model($code);
-//					mainModel::delete_binnacle($code);
-//					if($DelAdmin->rowCount()>=1){
-//						$DelAccount=mainModel::delete_account($code);
-//						if($DelAccount->rowCount()>=1){
-//							$dataAlert=[
-//								"Title"=>"Administrador eliminado",
-//								"Text"=>"El administrador fue eliminado del sistema con éxito",
-//								"Type"=>"success",
-//								"Alert"=>"reload"
-//							];
-//						}else{
-//							$dataAlert=[
-//								"Title"=>"Ocurrió un error inesperado",
-//								"Text"=>"No podemos eliminar la cuenta en este momento",
-//								"Type"=>"error",
-//								"Alert"=>"single"
-//							];
-//						}
-//					}else{
-//						$dataAlert=[
-//							"Title"=>"Ocurrió un error inesperado",
-//							"Text"=>"No podemos eliminar este administrador en este momento",
-//							"Type"=>"error",
-//							"Alert"=>"single"
-//						];
-//					}
-//				}else{
-//					$dataAlert=[
-//						"Title"=>"Ocurrió un error inesperado",
-//						"Text"=>"No podemos eliminar el administrador principal del sistema",
-//						"Type"=>"error",
-//						"Alert"=>"single"
-//					];
-//				}
-//			}else{
-//				$dataAlert=[
-//					"Title"=>"Ocurrió un error inesperado",
-//					"Text"=>"Tú no tienes los permisos necesarios para eliminar registros",
-//					"Type"=>"error",
-//					"Alert"=>"single"
-//				];
-//			}
-//			return mainModel::sweet_alert($dataAlert);
-//		}
 
+        }
 
 	}

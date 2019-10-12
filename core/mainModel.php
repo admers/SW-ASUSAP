@@ -39,6 +39,12 @@
 			return $letter.$correlative;
 		}
 
+		protected function generate_codigo_sum($dni,$correlative){
+			
+			$codigo = $dni."-".$correlative; 
+
+			return $codigo;
+		}
 
 		/* Funcion para limpiar cadenas de texto - Function to clean text strings */
 		protected function clean_string($value) {

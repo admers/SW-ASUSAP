@@ -3,7 +3,7 @@
 	|  Datos del servidor - Data of the server  |
 	===========================================*/
 	const SERVER="localhost";
-	const DB="dbasusapv4";
+	const DB="dbasusap";
 	const USER="root";
 	const PASS="cardenas";
 
