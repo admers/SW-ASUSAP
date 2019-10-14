@@ -1,4 +1,6 @@
 console.log("probando...");
+actualizarTabla_gconsumo();
+generarConsumoSinMedidor();
 
 //cuando ingresen código para buscar al asiciado
 document.getElementById("btnBuscarAsoc").addEventListener('click',function(){
@@ -96,7 +98,7 @@ function InsertarSuministro(){
 
 		let dt = new FormData(formularioSumi);
 		dt.append('dni',dni);
-		console.log(":)");
+		/*
 		console.log(dt.get('dni'));
 		console.log(dt.get('categoriaSumi'));
 		console.log(dt.get('direccionSumi'));		
@@ -104,7 +106,7 @@ function InsertarSuministro(){
 		console.log(dt.get('direccionNroSumi'));		
 		console.log(dt.get('medidorSumi'));		
 		console.log(dt.get('corteSumi'));	
-
+		*/
 		//validar que no se dejen valores vacios en el formulario
 		if(dt.get('direccionPsjSumi')=="" || dt.get('direccionNroSumi')==""){			
 			//colocar cursor donde falta rrellenar información					
@@ -147,40 +149,51 @@ function InsertarSuministro(){
 			});
 		})
 	});
-	/*
-	let element = $(".btnaSum");
-	element.click(function(){
-
-		let dni = $("#txtDniAsocModal").val();
-		let categoria = $("#listaCategoriaSumi").val();
-		let direccion = $("#listaDireccionSumi").val();
-		let pasaje = $("#direccionPsjSumi").val();
-		let numero = $("#direccionNroSumi").val();
-		let medidor = $("#medidorSumi").val();
-		let corte = $("#corteSumi").val();
-		let datosf = new FormData();
-		datosf.append('codAsoc','dni');
-		datosf.append('categoria','categoria');
-
-		console.log("-->> " + dni);
-		console.log("-->> " + categoria);
-		console.log("-->> " + direccion);
-		console.log("-->> " + pasaje);
-		console.log("-->> " + numero);
-		console.log("-->> " + medidor);
-		console.log("-->> " + corte);
-		console.log("-->> " + datosf);
-		//console.log("-->> " + datosf.);
-		
-		fetch('prueba.php',{
-			method: 'POST',
-			body: datos
-		});
-		//location.reload();
-		
-	})
-	*/	
 	
 	console.log("funcion de insert sumi");
 }
+
+/**
+ * Se actualizará la tabla de estado_gconsumo para dar inicio a la generación de consumo
+ * para el mes que corresponde.
+ */
+function actualizarTabla_gconsumo(){
+	console.log("UPDATE GCONSUMO");
+    $("#btn_updGC").click(function(e){
+		e.preventDefault();
+		console.log("click update tabla gconsuo");
+
+		let datos = new FormData();
+    	datos.append("UPDfgc",true);
+		
+		fetch('../ajax/gestionAS.php',{
+			method: 'POST',
+			body: datos
+		}).then(res => res.json())
+		.then(data=>{
+			console.log(data)
+			location.reload();
+			//response
+		})
+    });   
+}
+
+function generarConsumoSinMedidor(){
+	document.querySelector("#btnGenerarCXD").addEventListener('click',()=>{
+		let optionData = new FormData();
+		optionData.append("OPTION","GCSMedi");
+
+		fetch('../ajax/gestionRcbAjax.php',{
+			method:'POST',
+			body:optionData
+		}).then(res => res.json())
+		.then(data=>{
+			console.log(data);
+		});
+
+		console.log("clickkk btn x defecto");
+		//location.reload();
+	});
+}
+
 InsertarSuministro();
