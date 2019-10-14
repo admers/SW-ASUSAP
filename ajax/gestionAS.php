@@ -22,7 +22,22 @@
 
         echo json_encode("server sumi response ".$result);
 
-    }else{
-        echo json_encode("Server sumi response FALSE");
+    }
+    //Se valida la actualización de la tabla de fehcas de generación de consumo. Btn para dar inicio a la generación de consumo.
+    elseif(isset($_POST['UPDfgc'])){
+        
+        require_once "../controllers/adminController.php";
+        $updateTablegc = new adminController();
+        $result = $updateTablegc->actualizarFGConsumoController();
+        if($result){
+            echo json_encode("TRUE Server UPDfgc ");
+        }else {
+            echo json_encode("FALSE Server UPDfgc");            
+        }
+    }
+
+    else{
+        
+        echo json_encode("Server sumi response FALSE".$_POST['UPDfgc']);
     }
     

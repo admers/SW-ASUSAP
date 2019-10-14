@@ -68,6 +68,16 @@
 	    }
 
 
+		protected function fecha_actual(){
+			date_default_timezone_set('America/Lima');
+
+			$fecha_hoy = [
+				"anio"  => date("Y"),
+				"mes"   => date("n"),
+				"dia"   => date("d")
+			];
+			return $fecha_hoy;
+		}
 		/*----------  
 		Función para mostrar alerta de SweetAlert - SweetAlert alert display function  
 		----------*/

@@ -97,6 +97,15 @@
 			return true;
 		}
 
+		protected function actualizarFGConsumoModel($datosModel){
+			$anio = $datosModel['anio'];
+			$mes = $datosModel['mes'];
+			$con_medidor = $datosModel['gcn_consumo'];
+			$sin_medidor = $datosModel['gsn_consumo'];
+			$query = "UPDATE estado_gonsumo SET anio = $anio, mes=$mes, con_medidor=$con_medidor,sin_medidor=$sin_medidor WHERE id = 0";
+			$stmt = mainModel::execute_single_query($query);
+			return true;
+		}
 	/*================================GENERAR CONSUMO============================================*/
 
         public function listaGconsumoModelS($valor){

@@ -92,8 +92,113 @@
 			return $msj;
 		}
 
+		public function obtenerNombrefecha($anio,$n_mes){
+			$r_anio = $anio;
+			$r_mes = "";
+			if($n_mes <= 0){
+				if($n_mes == 0){
+					$r_mes = "Diciembre";
+					$r_anio -=1;
+					return ["r_mes"=>$r_mes,"r_anio"=>$r_anio];
+				}else{ // cuando sea enero y ya e hayan generado todos los consumos.
+					$r_mes = "Noviembre";
+					$r_anio -=1;
+					return ["r_mes"=>$r_mes,"r_anio"=>$r_anio];
+				}
+			}
+			
+			switch ($n_mes) {
+				case '1':
+					$r_mes = "Enero";
+					break;
+				case '2':
+					$r_mes = "Febrero";
+					break;
+				case '3':
+					$r_mes = "Marzo";
+					break;
+				case '4':
+					$r_mes = "Abril";
+					break;				
+				case '5':
+					$r_mes = "Mayo";
+					break;
+				case '6':
+					$r_mes = "Junio";
+					break;
+				case '7':
+					$r_mes = "Julio";
+					break;
+				case '8':
+					$r_mes = "Agosto";
+					break;
+				case '9':
+					$r_mes = "Septiembre";
+					break;
+				case '10':
+					$r_mes = "Octubre";
+					break;
+				case '11':
+					$r_mes = "Noviembre";
+					break;
+				case '12':
+					$r_mes = "Diciembre";
+					break;												
+				default:
+					# code...
+					$r_mes = "Diciembre";
+					$r_anio -=1;
+					break;
+			}
+			return ["r_mes"=>$r_mes,"r_anio"=>$r_anio];
+		}
+
 		public function consultaAsociado($query){
 			$result = mainModel::execute_single_query($query);
+			return $result;
+		}
+		public function consultar_stado_gconsumo(){
+			/* recuperar
+			*/
+			$query = "SELECT * FROM estado_gonsumo WHERE id=0";
+			$stmt = mainModel::execute_single_query($query);
+			$data_gc = $stmt->fetch();
+			$result = [
+				"anio"  => $data_gc['anio'],
+				"mes"   => $data_gc['mes'],
+				"gcn_consumo"   => $data_gc['con_medidor'],
+				"gsn_consumo"   => $data_gc['sin_medidor']
+			];
+			/*
+			$result = [
+				"anio"  => 2019,
+				"mes"   => 10,
+				"gcn_consumo"   => 0,
+				"gsn_consumo"   => 0
+			];
+			*/
+			return $result;
+		}
+		public function consultar_fecha_actual(){
+			date_default_timezone_set('America/Lima');
+
+			$fecha_hoy = [
+				"anio"  => date("Y"),
+				"mes"   => date("n"),
+				"dia"   => date("d")
+			];
+			return $fecha_hoy;
+		}
+
+		public function actualizarFGConsumoController(){
+			$fecha_actual = self::consultar_fecha_actual();
+			$dataController = [
+				'anio' => $fecha_actual['anio'],
+				'mes' => $fecha_actual['mes'],
+				'gcn_consumo' => 0,
+				'gsn_consumo' => 0
+			];
+			$result = adminModel::actualizarFGConsumoModel($dataController);
 			return $result;
 		}
 
