@@ -1,63 +1,40 @@
 function editRowRS(editableObjRS){
-   // console.log("valor"+editableObjRS)
     $(editableObjRS).css("background","#FFF");
 }
 
 function guardarABD(editableObjRS,id) {
-   // let ids = $("#ids").val();
-    let descripcion = $("#descripcion").val();
-    let monto = $("#monto").val();
-    precio=$(editableObjRS).text();
-    precio1=$(id).text();
-    //$(editableObjRS).css("background","#FFF url(cargando.gif) no-repeat right");
-    //console.log(ids+descripcion+monto);
+    $(editableObjRS).css("background","#FFF url(cargando.gif) no-repeat right");
     console.log($(editableObjRS).text()+id);
-
-    var b=[];
-    b=[precio1,precio]
-
-  //console.log('OPCION'+b[2])
-
-   //console.log( editableObjRS+id);
-   /* $.ajax({
-        url: "../ajax/buscarRS.php",SSS
+    $.ajax({
+        url: "../ajax/gc.php",
         type: "POST",
-        data:'insertV='+$(editableObjRS).text()+'&idV='+id,
+        data:'editval='+$(editableObjRS).text()+'&id='+id,
         success: function(data){
             $(editableObjRS).css("background","#00fdeb");
         }
-    });*/
+    });
 
 }
 
 
 let  c=0;
-let  a=0;
-let precio=0;
-let t=Math.floor(Math.random() * 100) + 1;
-
-
 function crearNuevo(){
-
+    console.log("Has echo click");
     c+=1;
 
-
-
     let data = '<tr class="table-row" id="new_row_ajax">' +
-        '<td scope="row" contenteditable="false"  onBlur="guardarABD(this,c)" id="txt_id"  onClick="editRowRS(this);"><input type="hidden" id="ids">'+c+'</td>' +
+        '<td scope="row" contenteditable="false" id="txt_title"  onClick="editRowRS(this);">'+c+'</td>' +
 
-        '<td contenteditable="true" onBlur="guardarABD(this,c)"  id="txt_descripcion" onClick="editRowRS(this);"><input type="hidden" id="descripcion"></td>' +
+        '<td contenteditable="true" id="txt_title"  onClick="editRowRS(this);"></td>' +
 
-        '<td contenteditable="true" onBlur="guardarABD(this,c)" onClick="editRowRS(this);" id="txt_monto"  ></td>' +
+        '<td contenteditable="true" onBlur="guardarABD(this,c)"  id="txt_description" onClick="editRowRS(this);"></td>' +
         '</tr>';
-
-    //console.log("Has echo click"+'descripcion');
     $("#table-body").append(data);
 }
 
 function showRow(row) {
     let x=row.cells;
-   // console.log(x[1]);
+    console.log(x[1]);
 
     document.getElementById("idrs").innerHTML = x[1].innerHTML;
     let  n = document.getElementById("nombreSR").innerHTML = x[2].innerHTML;

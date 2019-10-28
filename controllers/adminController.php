@@ -6,7 +6,7 @@
 	}
 	class adminController extends adminModel{
 
-    /*================================AGREGAR ASOCIADO============S================================*/
+    /*================================AGREGAR ASOCIADO============================================*/
 
         public function guardarUsuarioController(){
             if (isset($_POST["registrarAsoc"])){
@@ -241,11 +241,10 @@
 
             if (!empty($valor)) {
                 $conexion = mainModel::connect();
-             /// $query = "SELECT cod_suministro FROM suministro WHERE cod_suministro like '%" . $valor . "%'";
+              // $query = "SELECT * FROM factura_recibo WHERE suministro_cod_suministro like '%" . $valor . "%'";
                 $query= "SELECT a.idfactura_recibo,f.nombre,s.cod_suministro,s.direccion,a.consumo,a.monto_pagar,a.anio,a.mes,a.fecha_emision,a.hora_emision,a.fecha_vencimiento,a.consumo,a.monto_pagar, s.cod_suministro
                             FROM ((factura_recibo a INNER JOIN suministro s ON a.suministro_cod_suministro = s.cod_suministro)
                             INNER JOIN asociado f ON f.dni = s.asociado_dni) WHERE a.suministro_cod_suministro  like '%" . $valor . "%' OR f.nombre  like '%" . $valor . "%' OR s.direccion  like '%" . $valor . "%'";
-
                 $result = mainModel::execute_single_query($query);
 
                 $registroModal = [];
