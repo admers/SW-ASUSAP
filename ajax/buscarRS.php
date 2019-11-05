@@ -16,7 +16,6 @@ if(!empty($val))
 }
 
 
-
 if (isset($_POST['idV'])){
     $insertv=$_POST['insertV'];
     $idv=$_POST['idV'];
@@ -28,8 +27,5 @@ if (isset($_POST['idV'])){
 
     echo $result;
 }
-
-
-
 
 

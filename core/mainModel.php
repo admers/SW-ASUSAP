@@ -8,7 +8,8 @@
 
 		/* Funcion para conectar a la BD - Function to connect to DB */
 		protected function connect(){
-			$link= new PDO(SGBD,USER,PASS);
+			$link= new PDO(SGBD,USER,PASS);//array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
+			$link->exec("set names utf8");
 			return $link;
 		}
 

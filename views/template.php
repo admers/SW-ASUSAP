@@ -3,8 +3,32 @@
 <head>
 	<title><?php echo COMPANY; ?></title>
 	<?php require_once "./views/sections/links.php"; ?>
+	<style>
+		/*BTN CERRAR Y ABRIR SLIDER*/
+		.btn-slider-xd{
+			position:fixed;			
+			top:0px;			
+			z-index:1000;			
+			height:50px;
+			width:45px;
+			background:orange;					
+			border-radius:0 50px 50px 0;				
+			padding-top:2px;
+		}
+		.btn-slider-xd a{								
+			color:white;			
+			height:50px;
+			width:45px;			
+			display:block;
+			text-decoration:none;			
+			background: url("http://www.certificacionpm.com/wp-content/uploads/2019/04/punta-de-flecha-a-la-derecha.png");
+			background-repeat: no-repeat;
+			background-size: 40px 45px ;
+		}
+	</style>
 </head>
 <body>
+	
 	<?php
 		$AjaxRequest=false;
 
@@ -30,6 +54,11 @@
 	<section class="full-box dashboard-contentPage">
 		<!-- NavBar -->
 		<?php require_once "./views/sections/navBar.php"; ?>
+		
+		<!--BTN CERRAR/ABRIR SLIDER-->
+		<div class="btn-slider-xd" id="btn-slider-xd">
+			<a href="#!" class="btn-menu-dashboard"></a>
+		</div>
 
 		<!-- Content -->
 		<?php 
@@ -50,5 +79,6 @@
 	<script>
 		$.material.init();
 	</script>
+
 </body>
 </html>

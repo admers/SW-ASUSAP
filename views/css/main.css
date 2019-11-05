@@ -10,6 +10,9 @@
 @import url('./jquery.mCustomScrollbar.css');
 /* Material Design Iconic Font 2.2.0 */
 @import url('./material-design-iconic-font.min.css');
+/*
+@import url('./materialize.min.css');
+*/
 /*============ Fonts */
 @font-face {
     font-family: 'RobotoCondensedLight';
@@ -658,4 +661,72 @@ body, html{
 }
 .tabla-cabezera{
 	background: rgba(25,25,25,0.8);
+}
+.heiglite{
+	background-color: yellow;
+}
+/*Seleccion de tablas RS*/
+
+
+/*#content{
+	position: absolute;
+	min-height: 50%;
+	width: 80%;
+	top: 20%;
+	left: 5%;
+}*/
+
+.selected{
+	cursor: pointer;
+}
+.selected:hover{
+	background-color: #0585C0;
+	color: white;
+}
+.seleccionada{
+	background-color: #0585C0;
+	color: white;
+}
+
+/*--------collapsible---------*/
+.collapsible {
+	background-color: #777;
+	color: white;
+	cursor: pointer;
+	padding: 18px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	font-size: 15px;
+}
+
+.active, .collapsible:hover {
+	background-color: #555;
+}
+
+.collapsible:after {
+	content: '\002B';
+	color: white;
+	font-weight: bold;
+	float: right;
+	margin-left: 5px;
+}
+
+.active:after {
+	content: "\2212";
+}
+
+.content {
+	padding: 0 18px;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.2s ease-out;
+	background-color: #f1f1f1;
+}
+
+
+
+.formNewAss{
+	background-color: rgba(255, 221, 111, 0.37);
 }

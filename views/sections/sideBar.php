@@ -40,9 +40,8 @@
 						<a href="<?php echo SERVERURL; ?>erecibo/"><i class="zmdi zmdi-book zmdi-hc-fw"></i> Emitir Recibo</a>
 					</li>
 					<li>
-                        <a href="<?php echo SERVERURL; ?>crecibo/"> <i class="zmdi zmdi-card zmdi-hc-fw"></i><i class="zmdi zmdi-money zmdi-hc-fw"></i> Cobros Recibo</a>
+                        <a href="<?php echo SERVERURL; ?>crecibo/"> <i class="zmdi zmdi-money zmdi-hc-fw"></i> Cobros Recibo</a>
 					</li>
-
 				</ul>
 			</li>
 			<li>
@@ -81,14 +80,19 @@
 				<a href="#!" class="btn-sideBar-SubMenu">
 					<i class="zmdi zmdi-card zmdi-hc-fw"></i> REPORTES <i class="zmdi zmdi-caret-down pull-right"></i>
 				</a>
-				<!--<ul class="list-unstyled full-box">
+					<ul class="list-unstyled full-box">
+						<li>
+							<a href="<?php echo SERVERURL; ?>vercorte/"> <i class="zmdi zmdi-card zmdi-hc-fw"></i> Con Cortes</a>
+						</li>
+					</ul>
+				<!--
 					<li>
 						<a href="<?php /*echo SERVERURL; */?>registration/"><i class="zmdi zmdi-money-box zmdi-hc-fw"></i> Inscripción</a>
 					</li>
 					<li>
 						<a href="<?php /*echo SERVERURL; */?>payments/"><i class="zmdi zmdi-money zmdi-hc-fw"></i> Periodos</a>
 					</li>
-				</ul>-->
+				-->
 			</li>
 			<li>
 				<a href="#!" class="btn-sideBar-SubMenu">

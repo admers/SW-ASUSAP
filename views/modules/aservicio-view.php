@@ -7,7 +7,41 @@
 <!--    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse voluptas reiciendis tempora voluptatum eius porro ipsa quae voluptates officiis sapiente sunt dolorem, velit quos a qui nobis sed, dignissimos possimus!</p>
 --></div>
 
-<div class="container-fluid">
+<div class="container-fluid" onload="listar_as('');">
+
+    <div class="container" onload="listar_as('');">
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_consultar">
+
+
+                <div class="row form-horizontal">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-xs-4  text-right">
+                                    <label for="buscar" class="control-label">Buscar:</label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <input  type="text" name="buscar" id="buscarAS" class="form-control" onkeyup="listar_as(this.value);" placeholder="Ingrese Cod. Suministro o Nombre / Calle"/>
+                                </div>
+                            </div>
+                            <div class="form-group" id="datos-resultAS">
+                                <div class="card my-4" id="containerAS">
+                                </div>
+                                <div id="listaAS"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="resultado">valor</div>
+    </div>
+</div>
+
+<!--<div class="container-fluid">
 
     <div class="row">
         <div class="col-xs-12 col-sm-12">
@@ -67,7 +101,7 @@
         </div>
     </div>
 
-    </div>
+    </div>-->
 
 
 </div>
